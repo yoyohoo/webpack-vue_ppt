@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>vuex actions</title>
+	</head>
+	<body>
+		<div id="app">
+			<ul v-for="c in customers">
+				<li>{{ c.name }}</li>
+			</ul>
+		</div>
+	</body>
+	<script src="http://cdn.bootcss.com/vue/2.1.10/vue.js"></script>
+	<script src="http://cdn.bootcss.com/vuex/2.1.0/vuex.js"></script>
+	<script>
+		const store = new Vuex.Store({
+			state: {
+				customers: []
+			},
+			mutations: {
+				deleteCustomers: (state) => state.customers = [],
+				addCustomer: (state, customer) => state.customers.push(customer) //if not contains
+			},
+			actions: {
+				DEL_CUSTOMERS({
+					commit
+				}) {
+					commit('deleteCustomers')
+				},
+				ADD_CUSTOMER({
+					commit
+				}, customer) {
+					commit('addCustomer', customer)
+				}
+			}
+		})
+		const app = new Vue({
+			el: '#app',
+			computed: {
+				customers() {
+					return store.state.customers
+				}
+			},
+			methods: {
+				queryCustomers() {
+					var vm = this;
+					//query customers from server, it needs 3 seconds
+					setTimeout(function() {
+						var resData = [{
+							id: 1,
+							name: 'zhang san'
+						}, {
+							id: 2,
+							name: 'li si'
+						}]
+						for (var i = 0; i < resData.length; i++) {
+							var c = resData[i];
+							store.dispatch('ADD_CUSTOMER', c)
+						}
+						// delete customers after 3 seconds:
+						setTimeout(function() {
+							store.dispatch('DEL_CUSTOMERS')
+						}, 3000)
+					}, 1000)
+				}
+			},
+			created() {
+				this.queryCustomers()
+				store.dispatch('ADD_CUSTOMER', {
+					id: 0,
+					name: 'xxx'
+				})
+			}
+		})
+	</script>
+</html>
