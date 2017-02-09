@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Vuex demo</title>
+	</head>
+	<body>
+		<div id="app">
+			<input v-model="newItem" type="text" name="">
+			<button @click="addNewItem" type="button">Add Item</button>
+			<h5>all items:</h5>
+			<ul v-for="item in items">
+				<li>{{item}}</li>
+			</ul>
+			<h5>filtered short items(len<2):</h5>
+			<ul v-for="item in shortItems">
+				<li>{{item}}</li>
+			</ul>
+		</div>
+	</body>
+	<script src="http://cdn.bootcss.com/vue/2.1.10/vue.js"></script>
+	<script src="http://cdn.bootcss.com/vuex/2.1.0/vuex.js"></script>
+	<script>
+		const store = new Vuex.Store({
+			state: {
+				items: []
+			},
+			getters: {
+				shortItems: (state) => {
+					return state.items.filter(item => item.length < 2)
+				}
+			},
+			mutations: {
+				addItem(state, item) {
+					state.items.push(item)
+				},
+				clear(state) {
+					state.items = []
+				}
+			}
+		})
+		const app = new Vue({
+			el: '#app',
+			data() {
+				return {
+					newItem: null,
+				}
+			},
+			computed: {
+				items() {
+					return store.state.items
+				},
+				shortItems() {
+					return store.getters.shortItems
+				}
+			},
+			methods: {
+				addNewItem() {
+					store.commit('addItem', this.newItem)
+					this.newItem = ''
+				}
+			}
+		})
+	</script>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Vuex demo</title>
+	</head>
+	<body>
+		<div id="app">
+			<p>count: {{ count }}</p>
+			<p>
+				<button @click="increment">+</button>
+				<button @click="decrement">-</button>
+			</p>
+			<p>sum: {{ sum }}</p>
+			<p>
+				<button @click="add">+{{step}}</button>
+				<button @click="minus">-{{step}}</button>
+			</p>
+		</div>
+	</body>
+	<script src="http://cdn.bootcss.com/vue/2.1.10/vue.js"></script>
+	<script src="http://cdn.bootcss.com/vuex/2.1.0/vuex.js"></script>
+	<script>
+		const store = new Vuex.Store({
+			state: {
+				count: 0,
+				sum: 0
+			},
+			mutations: {
+				increment: state => state.count++,
+				decrement: state => state.count--,
+				add(state, n) {
+					state.sum += n;
+				},
+				minus(state, n) {
+					state.sum -= n;
+				}
+			}
+		})
+		const app = new Vue({
+			el: '#app',
+			data() {
+				return {
+					step: 10,
+				}
+			},
+			computed: {
+				count() {
+					return store.state.count
+				},
+				sum() {
+					return store.state.sum
+				}
+			},
+			methods: {
+				increment: () => store.commit('increment'),
+				decrement: () => store.commit('decrement'),
+				add() {
+					store.commit('add', this.step)
+				},
+				minus() {
+					store.commit('minus', this.step)
+				},
+			}
+		})
+	</script>
+</html>
